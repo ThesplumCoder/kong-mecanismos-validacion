@@ -27,6 +27,11 @@ sudo docker run -d --name api-local --network=red-kong -p 3000:3000 thesplumcode
 ### Contenedor Postgres
 Este contenedor guardará las configuraciones de Kong.
 
+Para la persistencia de Kong:
+```bash
+sudo docker volume create bd-datos
+```
+
 Para correr el contenedor:
 ```bash
 sudo docker run -d --name bd-kong \
@@ -35,7 +40,7 @@ sudo docker run -d --name bd-kong \
 -e "POSTGRES_DB=kong" \
 -e "POSTGRES_PASSWORD=kongpass" \
 -p 5432:5432 \
--v $HOME/Documentos/postgresBD:/var/lib/postgresql/data \
+-v bd-datos:/var/lib/postgresql/data \
 postgres
 ```
 
@@ -51,6 +56,11 @@ kong/kong-gateway:3.3.0.0 kong migrations bootstrap
 ### Contenedor Kong Gateway
 Este contenedor permitirá la conexión con Kong Gateway a sus diferentes puertos.
 
+Para la persistencia de Kong:
+```bash
+sudo docker volume create kong-datos
+```
+
 Para correr el contenedor:
 ```bash
 sudo docker run -d --name kong-gateway \
@@ -58,7 +68,7 @@ sudo docker run -d --name kong-gateway \
 -e "KONG_DATABASE=postgres" \
 -e "KONG_PG_HOST=bd-kong" \
 -e "KONG_PG_USER=kong" \
--e "KONG_PG_PASSWORD=kongpass"\
+-e "KONG_PG_PASSWORD=kongpass" \
 -e "KONG_PROXY_ACCESS_LOG=/dev/stdout" \
 -e "KONG_ADMIN_ACCESS_LOG=/dev/stdout" \
 -e "KONG_PROXY_ERROR_LOG=/dev/stderr" \
@@ -77,7 +87,7 @@ sudo docker run -d --name kong-gateway \
 -p 8000:8000 \
 -p 8001:8001 \
 -p 8002:8002 \
--v $HOME/Documentos/kong:/etc/kong \
+-v kong-datos:/etc/kong \
 kong/kong-gateway:3.3.0.0
 ```
 
