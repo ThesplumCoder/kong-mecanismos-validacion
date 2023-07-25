@@ -31,10 +31,11 @@ Para correr el contenedor:
 ```bash
 sudo docker run -d --name bd-kong \
 --network=red-kong \
--p 5432:5432 \
 -e "POSTGRES_USER=kong" \
 -e "POSTGRES_DB=kong" \
--e "POSTGRES_PASSWORD=kongpass \
+-e "POSTGRES_PASSWORD=kongpass" \
+-p 5432:5432 \
+-v $HOME/Documentos/postgresBD:/var/lib/postgresql/data \
 postgres
 ```
 
@@ -43,7 +44,7 @@ Para las configuraciones de Postgres con Kong:
 sudo docker run --rm --network=red-kong \
 -e "KONG_DATABASE=postgres" \
 -e "KONG_PG_HOST=bd-kong" \
--e "KONG_PG_PASSWORD=kongpass"\
+-e "KONG_PG_PASSWORD=kongpass" \
 kong/kong-gateway:3.3.0.0 kong migrations bootstrap
 ```
 
@@ -73,6 +74,10 @@ sudo docker run -d --name kong-gateway \
 -e 8445:8445 \
 -e 8003:8003 \
 -e 8004:8004 \
+-p 8000:8000 \
+-p 8001:8001 \
+-p 8002:8002 \
+-v $HOME/Documentos/kong:/etc/kong \
 kong/kong-gateway:3.3.0.0
 ```
 
